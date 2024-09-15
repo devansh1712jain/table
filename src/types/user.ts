@@ -1,7 +1,7 @@
 export interface User {
     password: string;
     email: string;
-    Id: number
+    id: number
   }
     
 export interface UserDocument extends User, Document {}

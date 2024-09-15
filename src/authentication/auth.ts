@@ -17,8 +17,8 @@ const auth = async (req: Request, res: Response, next: NextFunction): Promise<vo
         }
         
         const decoded = jwt.verify(token, process.env.SECRET_KEY || '') as jwt.JwtPayload;
-
-        req.Id  = decoded.Id;
+        
+        req.id  = decoded.id;
 
         next();  
     } catch (error) {

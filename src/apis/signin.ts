@@ -25,7 +25,7 @@ signinDetails.post("/", async (req, res) => {
     // Create JWT token
     const token = jwt.sign(
       {
-        Id: user.Id,
+        id: user.id,
       },
       process.env.SECRET_KEY as string,
       { expiresIn: "24h" }

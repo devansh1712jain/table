@@ -26,7 +26,7 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
             return;
         }
         const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY || '');
-        req.Id = decoded.Id;
+        req.id = decoded.id;
         next();
     }
     catch (error) {

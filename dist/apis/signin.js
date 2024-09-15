@@ -30,7 +30,7 @@ signinDetails.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function
         }
         // Create JWT token
         const token = jsonwebtoken_1.default.sign({
-            Id: user.Id,
+            id: user.id,
         }, process.env.SECRET_KEY, { expiresIn: "24h" });
         return res.status(200).send({
             msg: "Login Successful",

@@ -13,10 +13,10 @@ const express_1 = require("express");
 const __1 = require("..");
 const upload_1 = require("../uploadfunction/upload");
 const category = (0, express_1.Router)();
-category.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+category.post("/", upload_1.upload.single("Image"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //@ts-ignore
-        const userId = req.Id;
+        const userId = req.id;
         const { Category_name, Sequence } = req.body;
         const imagePath = req.file ? req.file.path : null;
         const sequenceAsInt = parseInt(Sequence, 10);
@@ -26,22 +26,13 @@ category.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(void
                     Category_name,
                     Image: imagePath,
                     Sequence: sequenceAsInt,
-                    userId
-                }
+                    userId,
+                },
             });
-            console.log({ response });
-            if (response.Status) {
-                res.status(200).json({
-                    success: true,
-                    message: "success",
-                });
-            }
-            else {
-                res.status(409).json({
-                    success: false,
-                    message: "Category already exists",
-                });
-            }
+            res.status(200).json({
+                success: true,
+                message: "success",
+            });
         }
         catch (error) {
             res.status(502).json({
@@ -58,7 +49,7 @@ category.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(void
         });
     }
 }));
-category.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+category.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categories = yield __1.prisma.category.findMany(); // Fetch all categories
         res.status(200).json({
@@ -74,7 +65,7 @@ category.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 }));
-category.patch('/:id', upload_1.upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+category.patch("/:id", upload_1.upload.single("Image"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params; // Get category ID from URL
         const { Category_name, Sequence } = req.body;
@@ -106,7 +97,7 @@ category.patch('/:id', upload_1.upload.single('Image'), (req, res) => __awaiter(
         });
     }
 }));
-category.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+category.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params; // Get category ID from URL
         // Delete the category from the database
