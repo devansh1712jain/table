@@ -50,7 +50,19 @@ product.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(void 
 }));
 product.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield __1.prisma.product.findMany(); // Fetch all products
+        const products = yield __1.prisma.product.findMany({
+            include: {
+                Subcategory: {
+                    include: {
+                        Category: {
+                            select: {
+                                Category_name: true, // Fetch the category name
+                            }
+                        }
+                    }
+                }
+            }
+        });
         res.status(200).json({
             success: true,
             data: products,

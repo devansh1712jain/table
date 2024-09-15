@@ -41,7 +41,19 @@ product.post('/', upload.single('Image'), async (req, res) => {
 
 product.get('/', async (req, res) => {
     try {
-        const products = await prisma.product.findMany(); // Fetch all products
+        const products = await prisma.product.findMany({
+            include: {
+                Subcategory: {
+                    include: {
+                        Category: { // Include the related category
+                            select: {
+                                Category_name: true, // Fetch the category name
+                            } 
+                        }
+                    }
+                }
+            }
+        });
         res.status(200).json({
             success: true,
             data: products,

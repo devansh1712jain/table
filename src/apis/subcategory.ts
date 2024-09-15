@@ -43,7 +43,15 @@ subcategory.post('/', upload.single('Image'), async (req, res) => {
 
 subcategory.get('/', async (req, res) => {
     try {
-        const subcategories = await prisma.subcategory.findMany(); // Fetch all subcategories
+        const subcategories = await prisma.subcategory.findMany({
+            include: {
+                Category: { // The relation name in Prisma should match the model name
+                    select: {
+                        Category_name: true, // Fetch the category name
+                    },
+                },
+            },
+        });
         res.status(200).json({
             success: true,
             data: subcategories,

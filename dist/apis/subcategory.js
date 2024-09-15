@@ -52,7 +52,15 @@ subcategory.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(v
 }));
 subcategory.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const subcategories = yield __1.prisma.subcategory.findMany(); // Fetch all subcategories
+        const subcategories = yield __1.prisma.subcategory.findMany({
+            include: {
+                Category: {
+                    select: {
+                        Category_name: true, // Fetch the category name
+                    },
+                },
+            },
+        });
         res.status(200).json({
             success: true,
             data: subcategories,
