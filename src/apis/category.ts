@@ -61,7 +61,7 @@ category.get("/", async (req, res) => {
 category.patch("/:id", upload.single("Image"), async (req, res) => {
   try {
     const { id } = req.params; // Get category ID from URL
-    const { Category_name, Sequence } = req.body;
+    const { Category_name, Sequence,Status } = req.body;
     const imagePath = req.file ? req.file.path : null; // Check if a new image was uploaded
 
     // Build the update data object dynamically
@@ -69,7 +69,7 @@ category.patch("/:id", upload.single("Image"), async (req, res) => {
     if (Category_name) updateData.Category_name = Category_name;
     if (Sequence) updateData.Sequence = parseInt(Sequence, 10);
     if (imagePath) updateData.Image = imagePath;
-
+    if (Status != null) updateData.Status = Status;
     // Update the category in the database
     const updatedCategory = await prisma.category.update({
       where: { id: Number(id) }, // Find the category by ID

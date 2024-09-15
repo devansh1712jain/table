@@ -60,7 +60,7 @@ subcategory.get('/', async (req, res) => {
 subcategory.patch('/:id', upload.single('Image'), async (req, res) => {
     try {
         const { id } = req.params; // Get subcategory ID from URL
-        const { Subcategory_name, Sequence, CategoryId } = req.body;
+        const { Subcategory_name, Sequence, CategoryId,Status } = req.body;
         const imagePath = req.file ? req.file.path : null;
 
         // Build the update data object dynamically
@@ -69,6 +69,7 @@ subcategory.patch('/:id', upload.single('Image'), async (req, res) => {
         if (Sequence) updateData.Sequence = parseInt(Sequence, 10);
         if (CategoryId) updateData.Category = { connect: { id: Number(CategoryId) } };
         if (imagePath) updateData.Image = imagePath;
+        if (Status != null) updateData.Status = Status;
 
         // Update the subcategory in the database
         const updatedSubcategory = await prisma.subcategory.update({

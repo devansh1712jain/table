@@ -69,7 +69,7 @@ subcategory.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 subcategory.patch('/:id', upload_1.upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params; // Get subcategory ID from URL
-        const { Subcategory_name, Sequence, CategoryId } = req.body;
+        const { Subcategory_name, Sequence, CategoryId, Status } = req.body;
         const imagePath = req.file ? req.file.path : null;
         // Build the update data object dynamically
         const updateData = {};
@@ -81,6 +81,8 @@ subcategory.patch('/:id', upload_1.upload.single('Image'), (req, res) => __await
             updateData.Category = { connect: { id: Number(CategoryId) } };
         if (imagePath)
             updateData.Image = imagePath;
+        if (Status != null)
+            updateData.Status = Status;
         // Update the subcategory in the database
         const updatedSubcategory = yield __1.prisma.subcategory.update({
             where: { id: Number(id) }, // Find the subcategory by ID

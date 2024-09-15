@@ -1,4 +1,7 @@
+import express from 'express';
 import { Router } from "express";
+import path from "path";
+
 import auth from "../authentication/auth";
 import signinDetails from "../apis/signin";
 import signupDetails from "../apis/signup";
@@ -10,6 +13,7 @@ const userRouter = Router();
 
 userRouter.use('/signin',signinDetails);
 userRouter.use('/signup',signupDetails);
+userRouter.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 userRouter.use(auth);
 
