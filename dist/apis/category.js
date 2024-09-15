@@ -8,39 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const __1 = require("..");
-const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
+const upload_1 = require("../uploadfunction/upload");
 const category = (0, express_1.Router)();
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads'); // specify the upload directory
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path_1.default.extname(file.originalname)); // unique filename with timestamp
-    }
-});
-const upload = (0, multer_1.default)({
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 }, // limit image size to 5MB
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path_1.default.extname(file.originalname).toLowerCase());
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-        else {
-            cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-        }
-    }
-});
-category.post('/', upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+category.post('/', upload_1.upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //@ts-ignore
         const userId = req.Id;
@@ -82,6 +55,75 @@ category.post('/', upload.single('Image'), (req, res) => __awaiter(void 0, void 
         res.status(500).json({
             success: false,
             msg: "Authentication failed",
+        });
+    }
+}));
+category.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const categories = yield __1.prisma.category.findMany(); // Fetch all categories
+        res.status(200).json({
+            success: true,
+            data: categories,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch categories",
+            error,
+        });
+    }
+}));
+category.patch('/:id', upload_1.upload.single('Image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params; // Get category ID from URL
+        const { Category_name, Sequence } = req.body;
+        const imagePath = req.file ? req.file.path : null; // Check if a new image was uploaded
+        // Build the update data object dynamically
+        const updateData = {};
+        if (Category_name)
+            updateData.Category_name = Category_name;
+        if (Sequence)
+            updateData.Sequence = parseInt(Sequence, 10);
+        if (imagePath)
+            updateData.Image = imagePath;
+        // Update the category in the database
+        const updatedCategory = yield __1.prisma.category.update({
+            where: { id: Number(id) }, // Find the category by ID
+            data: updateData, // Update the fields provided
+        });
+        res.status(200).json({
+            success: true,
+            message: "Category updated successfully",
+            data: updatedCategory,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update category",
+            error,
+        });
+    }
+}));
+category.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params; // Get category ID from URL
+        // Delete the category from the database
+        const deletedCategory = yield __1.prisma.category.delete({
+            where: { id: Number(id) }, // Find the category by ID
+        });
+        res.status(200).json({
+            success: true,
+            message: "Category deleted successfully",
+            data: deletedCategory, // Optional: return deleted category details
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete category",
+            error,
         });
     }
 }));
