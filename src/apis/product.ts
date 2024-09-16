@@ -70,7 +70,7 @@ product.get('/', async (req, res) => {
 product.patch('/:id', upload.single('Image'), async (req, res) => {
     try {
         const { id } = req.params; // Get product ID from URL
-        const { Product_name, Subcategory_id } = req.body;
+        const { Product_name, Subcategory_id ,Status} = req.body;
         const imagePath = req.file ? req.file.path : null;
 
         // Build the update data object dynamically
@@ -78,6 +78,7 @@ product.patch('/:id', upload.single('Image'), async (req, res) => {
         if (Product_name) updateData.Product_name = Product_name;
         if (Subcategory_id) updateData.Subcategory = { connect: { id: Number(Subcategory_id) } };
         if (imagePath) updateData.Image = imagePath;
+        if (Status != null) updateData.Status = Status;
 
         // Update the product in the database
         const updatedProduct = await prisma.product.update({
